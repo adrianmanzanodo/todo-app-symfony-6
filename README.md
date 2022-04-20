@@ -1,4 +1,4 @@
-# TO-DO App
+# TO-DO APP
 
 Here is my TO-DO App with Symfony 6
 
