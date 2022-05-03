@@ -1,10 +1,16 @@
 {% extends 'layout.html.twig' %}
 
-{% block title %}Create task{% endblock %}
+{% block title %}
+  Create task
+{% endblock %}
 
 {% block page_contents %}
-    {% for task in tasks %}
-        <h2>{{ task.name }}</h2>
-        <p>{{ task.description }}</p>
-    {% endfor %}
+  <div class="row">
+    <h3>
+      Create Task
+    </h3>
+    <div class="col-4" style="margin-top: 20px !important">
+      {{ form(form) }}
+    </div>
+  </div>
 {% endblock %}
