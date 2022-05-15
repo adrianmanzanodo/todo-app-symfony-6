@@ -22,6 +22,9 @@ class Task
     #[Assert\NotBlank]
     private $description;
 
+    #[ORM\Column(type: 'boolean', options: ['default' =>  0])]
+    private $completed;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -47,6 +50,18 @@ class Task
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getCompleted(): ?bool
+    {
+        return $this->completed;
+    }
+
+    public function setCompleted(bool $completed): self
+    {
+        $this->completed = $completed;
 
         return $this;
     }

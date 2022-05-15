@@ -47,6 +47,31 @@ class TaskRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function complete(Task $entity, bool $flush = true): void
+    {   
+        $entity->setCompleted(true);
+        $this->_em->persist($entity);
+        if ($flush) {
+            $this->_em->flush();
+        }
+    }
+
+    /**
+     * @return Task[] Return an array of Tasks objects
+     * they will be active tasks (non completed)
+     */
+    public function findActiveTasks(){
+        return $this->createQueryBuilder('t')
+        ->andWhere('t.completed = :val')
+        ->setParameter('val', false)
+        ->getQuery()
+        ->getResult();
+    }
+
     // /**
     //  * @return Task[] Returns an array of Task objects
     //  */

@@ -10,11 +10,13 @@
   </h1>
 
   <div class="p-2">
-    <a class="btn btn-primary" href="{{path('task_create')}}">Crear nueva tarea</a>
+    <a class="btn btn-primary" href="{{ path('task_create') }}">
+      Crear nueva tarea
+    </a>
   </div>
   <div class="d-flex flex-wrap justify-content-center">
     {% for task in tasks %}
-      <div class="p-2">
+      <div class="p-2 taskContainer">
         <div class="card" style="width: 18rem;">
           <div class="card-body">
             <h5 class="card-title">
@@ -26,11 +28,31 @@
             <p class="card-text">
               {{ task.description }}
             </p>
-            <a href="#" class="card-link">Card link</a>
-            <a href="#" class="card-link">Another link</a>
           </div>
+          <a id="{{ task.id }}" onclick="completeTask(this.id)" class="btn btn-primary completeButton">
+            Completar
+          </a>
         </div>
       </div>
     {% endfor %}
   </div>
+{% endblock %}
+
+{% block javascripts %}
+  <script>
+
+      function completeTask(id){
+        let url = "{{ (path('task_complete', {'id': 'ReplaceMeWithCorrectValue'})) }}";
+        url = url.replace("ReplaceMeWithCorrectValue", id);
+
+        let item = document.getElementById(id);
+        let taskContainer = item.closest('.taskContainer');
+
+         $.ajax({ 
+           url: url, })
+           .done(function(){
+                $(taskContainer).hide();
+            });          
+        }
+  </script>
 {% endblock %}

@@ -11,14 +11,16 @@ use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Persistence\ManagerRegistry;
-
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class TaskController extends AbstractController
 {
+    private $taskRepository;
     private $doctrine;
     public function __construct(ManagerRegistry $doctrine)
     {
         $this->doctrine = $doctrine;
+        $this->taskRepository = $this->doctrine->getRepository(Task::class);
     }
 
     #[Route('/', name: 'task_index')]
@@ -26,7 +28,7 @@ class TaskController extends AbstractController
     {
 
         $taskRepository = $this->doctrine->getRepository(Task::class);
-        $tasks = $taskRepository->findAll();
+        $tasks = $taskRepository->findActiveTasks();
 
         return $this->render('task/index.html.twig', [
             'tasks' => $tasks,
@@ -34,14 +36,14 @@ class TaskController extends AbstractController
     }
 
     #[Route('/task/create', name: 'task_create')]
-    public function create(Request $request, ManagerRegistry $doctrine): Response
+    public function create(Request $request): Response
     {
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $doctrine->getManager();
+            $entityManager = $this->doctrine->getManager();
             $task = $form->getData();
 
             $entityManager->persist($task);
@@ -53,5 +55,12 @@ class TaskController extends AbstractController
         return $this->renderForm('task/create.html.twig', [
             'form' => $form,
         ]);
+    }
+
+    #[Route('/task/complete/{id}', name: 'task_complete')]
+    public function complete($id): JsonResponse{
+        $task = $this->taskRepository->find($id);
+        $this->taskRepository->complete($task);
+        return new JsonResponse();
     }
 }
