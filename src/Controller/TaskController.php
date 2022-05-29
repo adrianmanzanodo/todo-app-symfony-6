@@ -24,9 +24,8 @@ class TaskController extends AbstractController
     }
 
     #[Route('/', name: 'task_index')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
-
         $taskRepository = $this->doctrine->getRepository(Task::class);
         $tasks = $taskRepository->findActiveTasks();
 
@@ -58,9 +57,33 @@ class TaskController extends AbstractController
     }
 
     #[Route('/task/complete/{id}', name: 'task_complete')]
-    public function complete($id): JsonResponse{
+    public function complete($id): JsonResponse
+    {
         $task = $this->taskRepository->find($id);
         $this->taskRepository->complete($task);
         return new JsonResponse();
+    }
+
+    #[Route('/task/edit/{taskId}', name: 'task_edit')]
+    public function edit(Request $request, $taskId): Response
+    {   
+        //Get task if cames from edit, if not create a new Task.
+        $task = !isset($taskId)? new Task():  $this->taskRepository->find($taskId); 
+        $form = $this->createForm(TaskType::class, $task);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->doctrine->getManager();
+            $task = $form->getData();
+
+            $entityManager->persist($task);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('task_index');
+        }
+
+        return $this->renderForm('task/create.html.twig', [
+            'form' => $form,
+        ]);
     }
 }

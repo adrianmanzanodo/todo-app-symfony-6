@@ -14,9 +14,10 @@
       Crear nueva tarea
     </a>
   </div>
-  <div class="d-flex flex-wrap justify-content-center">
+  <div class="d-flex flex-wrap justify-content-center">  
     {% for task in tasks %}
       <div class="p-2 taskContainer">
+      <a href="{{path('task_edit', {taskId: task.id})}}" style="color: unset;text-decoration: none;">
         <div class="card" style="width: 18rem;">
           <div class="card-body">
             <h5 class="card-title">
@@ -33,6 +34,7 @@
             Completar
           </a>
         </div>
+        </a>
       </div>
     {% endfor %}
   </div>
