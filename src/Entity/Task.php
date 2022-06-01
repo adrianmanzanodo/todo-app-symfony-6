@@ -14,8 +14,11 @@ class Task
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    #[Assert\NotBlank]
+    #[ORM\Column(type: 'string')]
+    #[Assert\Length(
+        max: 25,
+        maxMessage: 'La longitud maxima es de {{ limit }}',
+    )]
     private $name;
 
     #[ORM\Column(type: 'string', length: 255)]
