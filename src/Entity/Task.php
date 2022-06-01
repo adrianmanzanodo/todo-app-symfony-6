@@ -15,6 +15,7 @@ class Task
     private $id;
 
     #[ORM\Column(type: 'string')]
+    #[Assert\NotNull]
     #[Assert\Length(
         max: 25,
         maxMessage: 'La longitud maxima es de {{ limit }}',
